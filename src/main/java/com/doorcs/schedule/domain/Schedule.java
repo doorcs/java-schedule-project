@@ -31,4 +31,10 @@ public class Schedule {
     public static Schedule of(String content, String name, String password, Date createdAt) {
         return of(null, content, name, password, createdAt, createdAt);
     }
+
+    public void update(String content, String name) {
+        this.content = content;
+        this.name = name;
+        this.modifiedAt = new Date(System.currentTimeMillis());
+    }
 }
