@@ -8,9 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.doorcs.schedule.domain.Schedule;
 import com.doorcs.schedule.domain.ScheduleRepository;
+import com.doorcs.schedule.exception.BadRequestException;
 import com.doorcs.schedule.service.request.CreateScheduleRequest;
+import com.doorcs.schedule.service.request.UpdateScheduleRequest;
 import com.doorcs.schedule.service.response.CreateScheduleResponse;
 import com.doorcs.schedule.service.response.ReadScheduleResponse;
+import com.doorcs.schedule.service.response.UpdateScheduleResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +36,7 @@ public class ScheduleService {
         );
 
         if (affectedRow != 1) {
-            throw new RuntimeException("Failed to create schedule");
+            throw new BadRequestException("일정 생성을 실패했습니다.");
         }
 
         return new CreateScheduleResponse(
@@ -58,6 +61,42 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(id);
 
         return new ReadScheduleResponse(
+            schedule.getContent(),
+            schedule.getName(),
+            schedule.getModifiedAt()
+        );
+    }
+
+    @Transactional
+    public UpdateScheduleResponse update(
+        Long id,
+        UpdateScheduleRequest updateScheduleRequest
+    ) {
+        Schedule schedule = scheduleRepository.findById(id);
+
+        if (updateScheduleRequest.password() == null ||
+            updateScheduleRequest.password().isEmpty() ||
+            !schedule.getPassword().equals(updateScheduleRequest.password())
+        ) {
+            throw new BadRequestException("비밀번호가 틀립니다.");
+        }
+
+        if (updateScheduleRequest.content() == null && updateScheduleRequest.name() == null) {
+            throw new BadRequestException("수정할 내용이 없습니다.");
+        }
+
+        schedule.update(
+            updateScheduleRequest.content() != null ? updateScheduleRequest.content() : schedule.getContent(),
+            updateScheduleRequest.name() != null ? updateScheduleRequest.name() : schedule.getName()
+        );
+
+        int affectedRow = scheduleRepository.update(schedule);
+
+        if (affectedRow != 1) {
+            throw new BadRequestException("일정 수정을 실패했습니다.");
+        }
+
+        return new UpdateScheduleResponse(
             schedule.getContent(),
             schedule.getName(),
             schedule.getModifiedAt()
