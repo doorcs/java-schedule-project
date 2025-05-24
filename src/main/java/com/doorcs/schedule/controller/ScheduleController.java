@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.doorcs.schedule.service.ScheduleService;
 import com.doorcs.schedule.service.request.CreateScheduleRequest;
+import com.doorcs.schedule.service.request.DeleteScheduleRequest;
 import com.doorcs.schedule.service.request.UpdateScheduleRequest;
 import com.doorcs.schedule.service.response.CreateScheduleResponse;
+import com.doorcs.schedule.service.response.DeleteScheduleResponse;
 import com.doorcs.schedule.service.response.ReadScheduleResponse;
 import com.doorcs.schedule.service.response.UpdateScheduleResponse;
 
@@ -65,5 +68,15 @@ public class ScheduleController {
         UpdateScheduleResponse updateScheduleResponse = scheduleService.update(id, updateScheduleRequest);
 
         return ResponseEntity.ok().body(updateScheduleResponse);
+    }
+
+    @DeleteMapping("/schedules/{id}")
+    public ResponseEntity<DeleteScheduleResponse> delete(
+        @PathVariable Long id,
+        @RequestBody DeleteScheduleRequest password
+    ) {
+        DeleteScheduleResponse deleted = scheduleService.delete(id, password.password());
+
+        return ResponseEntity.ok().body(deleted);
     }
 }

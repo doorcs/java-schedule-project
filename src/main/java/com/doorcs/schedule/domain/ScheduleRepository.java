@@ -78,4 +78,9 @@ public class ScheduleRepository {
             schedule.getId()
         );
     }
+
+    public int delete(Long id) {
+        String sql = "DELETE FROM schedule WHERE id = ?";
+        return jdbcTemplate.update(sql, id);
+    }
 }
