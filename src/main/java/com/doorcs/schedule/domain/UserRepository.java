@@ -37,4 +37,28 @@ public class UserRepository {
             ), email
         );
     }
+
+    public User findById(Long userId) {
+        String sql = "SELECT * FROM user WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> User.of(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("password"),
+                rs.getString("email"),
+                rs.getDate("created_at"),
+                rs.getDate("modified_at")
+            ), userId
+        );
+    }
+
+    public int update(User user) {
+        String sql = "UPDATE user SET name = ?, password = ?, email = ?, modified_at = ? WHERE id = ?";
+        return jdbcTemplate.update(sql,
+            user.getName(),
+            user.getPassword(),
+            user.getEmail(),
+            user.getModifiedAt(),
+            user.getId()
+        );
+    }
 }

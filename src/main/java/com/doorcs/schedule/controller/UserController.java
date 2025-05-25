@@ -3,6 +3,7 @@ package com.doorcs.schedule.controller;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.doorcs.schedule.service.UserService;
 import com.doorcs.schedule.service.request.CreateUserRequest;
 import com.doorcs.schedule.service.request.SigninRequest;
+import com.doorcs.schedule.service.request.UpdateUserRequest;
 import com.doorcs.schedule.service.response.CreateUserResponse;
 import com.doorcs.schedule.service.response.SigninResponse;
 import com.doorcs.schedule.service.response.SignoutResponse;
+import com.doorcs.schedule.service.response.UpdateUserResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -59,5 +62,15 @@ public class UserController {
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
             .body(new SignoutResponse("로그아웃 성공"));
+    }
+
+    @PostMapping("/auth/me")
+    public ResponseEntity<UpdateUserResponse> updateUser(
+        @CookieValue String jwt,
+        @RequestBody UpdateUserRequest updateUserRequest
+    ) {
+        UpdateUserResponse updateUserResponse = userService.update(jwt, updateUserRequest);
+
+        return ResponseEntity.ok().body(updateUserResponse);
     }
 }

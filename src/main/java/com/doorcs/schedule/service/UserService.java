@@ -11,8 +11,10 @@ import com.doorcs.schedule.exception.BadRequestException;
 import com.doorcs.schedule.jwt.JwtUtil;
 import com.doorcs.schedule.service.request.CreateUserRequest;
 import com.doorcs.schedule.service.request.SigninRequest;
+import com.doorcs.schedule.service.request.UpdateUserRequest;
 import com.doorcs.schedule.service.response.CreateUserResponse;
 import com.doorcs.schedule.service.response.SigninResponse;
+import com.doorcs.schedule.service.response.UpdateUserResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,6 +58,33 @@ public class UserService {
 
         return new SigninResponse(
             jwtUtil.createJwt(user.getId())
+        );
+    }
+
+    @Transactional
+    public UpdateUserResponse update(String jwt, UpdateUserRequest updateUserRequest) {
+        User user = userRepository.findById(jwtUtil.getUserId(jwt));
+
+        if (user == null) {
+            throw new BadRequestException("로그인이 필요합니다.");
+        }
+
+        user.update(
+            updateUserRequest.name() == null ? user.getName() : updateUserRequest.name(),
+            updateUserRequest.password() == null ? user.getPassword() : updateUserRequest.password(),
+            updateUserRequest.email() == null ? user.getEmail() : updateUserRequest.email()
+        );
+
+        int affectedRow = userRepository.update(user);
+
+        if (affectedRow != 1) {
+            throw new BadRequestException("사용자 정보 수정에 실패했습니다.");
+        }
+
+        return new UpdateUserResponse(
+            user.getName(),
+            user.getEmail(),
+            user.getModifiedAt()
         );
     }
 }
