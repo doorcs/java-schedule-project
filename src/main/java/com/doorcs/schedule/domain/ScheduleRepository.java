@@ -28,7 +28,7 @@ public class ScheduleRepository {
         );
     }
 
-    public List<Schedule> findAll(Long userId, Date date) {
+    public List<Schedule> findAll(Long userId, Date date, int page, int pageSize) {
         String sql = "SELECT * FROM schedule WHERE TRUE";
         List<Object> params = new ArrayList<>();
 
@@ -42,7 +42,9 @@ public class ScheduleRepository {
             params.add(date);
         }
 
-        sql += " ORDER BY modified_at";
+        sql += " ORDER BY modified_at LIMIT ? OFFSET ?";
+        params.add(pageSize);
+        params.add(page * pageSize);
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> Schedule.of(
                 rs.getLong("id"),

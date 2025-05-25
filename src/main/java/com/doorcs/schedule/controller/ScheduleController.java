@@ -45,9 +45,11 @@ public class ScheduleController {
     @GetMapping("/schedules")
     public ResponseEntity<List<ReadScheduleResponse>> getAll(
         @RequestParam(required = false) Long userId,
-        @RequestParam(required = false) Date modifiedDate
+        @RequestParam(required = false) Date modifiedDate,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5", name="pagesize") int pageSize
     ) {
-        List<ReadScheduleResponse> readScheduleResponses = scheduleService.getAll(userId, modifiedDate);
+        List<ReadScheduleResponse> readScheduleResponses = scheduleService.getAll(userId, modifiedDate, page, pageSize);
 
         return ResponseEntity.ok().body(readScheduleResponses);
     }
