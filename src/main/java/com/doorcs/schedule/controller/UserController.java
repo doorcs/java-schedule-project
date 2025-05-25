@@ -13,6 +13,7 @@ import com.doorcs.schedule.service.request.CreateUserRequest;
 import com.doorcs.schedule.service.request.SigninRequest;
 import com.doorcs.schedule.service.response.CreateUserResponse;
 import com.doorcs.schedule.service.response.SigninResponse;
+import com.doorcs.schedule.service.response.SignoutResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,5 +46,18 @@ public class UserController {
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
             .body(signinResponse);
+    }
+
+    @PostMapping("/auth/signout")
+    public ResponseEntity<SignoutResponse> signoutUser() {
+        ResponseCookie responseCookie = ResponseCookie.from("jwt", "")
+            .httpOnly(true)
+            .path("/")
+            .maxAge(0) // 쿠키를 즉시 만료시킴
+            .build();
+
+        return ResponseEntity.ok()
+            .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+            .body(new SignoutResponse("로그아웃 성공"));
     }
 }
