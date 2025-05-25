@@ -11,6 +11,7 @@ import com.doorcs.schedule.domain.ScheduleRepository;
 import com.doorcs.schedule.domain.User;
 import com.doorcs.schedule.domain.UserRepository;
 import com.doorcs.schedule.exception.BadRequestException;
+import com.doorcs.schedule.jwt.JwtUtil;
 import com.doorcs.schedule.service.request.CreateScheduleRequest;
 import com.doorcs.schedule.service.request.UpdateScheduleRequest;
 import com.doorcs.schedule.service.response.CreateScheduleResponse;
@@ -25,28 +26,32 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
-    // @Transactional
-    // public CreateScheduleResponse create(CreateScheduleRequest createScheduleRequest) {
-    //     int affectedRow = scheduleRepository.save(Schedule.of(
-    //             // id는 auto increment
-    //             createScheduleRequest.content(),
-    //             createScheduleRequest.userId(),
-    //             createScheduleRequest.date()
-    //             // modified_at 필드는 created_at 필드와 같은 값 사용
-    //         )
-    //     );
-    //
-    //     if (affectedRow != 1) {
-    //         throw new BadRequestException("일정 생성을 실패했습니다.");
-    //     }
-    //
-    //     return new CreateScheduleResponse(
-    //         createScheduleRequest.content(),
-    //         createScheduleRequest.name(),
-    //         createScheduleRequest.date()
-    //     );
-    // }
+    @Transactional
+    public CreateScheduleResponse create(String jwt, CreateScheduleRequest createScheduleRequest) {
+        Long userId = jwtUtil.getUserId(jwt);
+        Date createdAt = new Date(System.currentTimeMillis());
+
+        int affectedRow = scheduleRepository.save(Schedule.of(
+                // id는 auto increment
+                userId,
+                createScheduleRequest.content(),
+                createdAt
+                // modified_at 필드는 created_at 필드와 같은 값 사용
+            )
+        );
+
+        if (affectedRow != 1) {
+            throw new BadRequestException("일정 생성을 실패했습니다.");
+        }
+
+        return new CreateScheduleResponse(
+            userId,
+            createScheduleRequest.content(),
+            createdAt
+        );
+    }
 
     @Transactional(readOnly = true)
     public List<ReadScheduleResponse> getAll(Long userId, Date date) {

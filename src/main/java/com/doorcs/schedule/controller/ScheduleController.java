@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,14 +33,15 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    // @PostMapping("/schedules")
-    // public ResponseEntity<CreateScheduleResponse> create(
-    //     @RequestBody CreateScheduleRequest createScheduleRequest
-    // ) {
-    //     CreateScheduleResponse createScheduleResponse = scheduleService.create(createScheduleRequest);
-    //
-    //     return ResponseEntity.ok().body(createScheduleResponse);
-    // }
+    @PostMapping("/schedules")
+    public ResponseEntity<CreateScheduleResponse> create(
+        @CookieValue String jwt,
+        @RequestBody CreateScheduleRequest createScheduleRequest
+    ) {
+        CreateScheduleResponse createScheduleResponse = scheduleService.create(jwt, createScheduleRequest);
+
+        return ResponseEntity.ok().body(createScheduleResponse);
+    }
 
     @GetMapping("/schedules")
     public ResponseEntity<List<ReadScheduleResponse>> getAll(
