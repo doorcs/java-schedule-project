@@ -24,11 +24,14 @@ public class JwtUtil {
     }
 
     public Long getUserId(String token) {
-        return Jwts.parser()
-            .verifyWith(key) // 검증
-            .build()
-            .parseSignedClaims(token)
-            .getPayload()
-            .get("userId", Long.class); // 페이로드에서 사용자 ID만 추출
+        return Long.parseLong( // Long 타입으로 캐스팅
+            Jwts.parser()
+                .verifyWith(key) // 검증
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                // .get("userId", Long.class)
+                .get("userId", String.class) // 페이로드에서 사용자 ID만 추출
+        );
     }
 }
