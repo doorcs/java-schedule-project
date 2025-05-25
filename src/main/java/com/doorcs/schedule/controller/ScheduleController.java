@@ -23,6 +23,7 @@ import com.doorcs.schedule.service.response.DeleteScheduleResponse;
 import com.doorcs.schedule.service.response.ReadScheduleResponse;
 import com.doorcs.schedule.service.response.UpdateScheduleResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,7 +36,7 @@ public class ScheduleController {
     @PostMapping("/schedules")
     public ResponseEntity<CreateScheduleResponse> create(
         @CookieValue String jwt,
-        @RequestBody CreateScheduleRequest createScheduleRequest
+        @Valid @RequestBody CreateScheduleRequest createScheduleRequest
     ) {
         CreateScheduleResponse createScheduleResponse = scheduleService.create(jwt, createScheduleRequest);
 

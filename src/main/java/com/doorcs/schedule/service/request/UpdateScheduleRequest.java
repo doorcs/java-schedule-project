@@ -1,4 +1,7 @@
 package com.doorcs.schedule.service.request;
 
-public record UpdateScheduleRequest(String content) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record UpdateScheduleRequest(@NotBlank @Size(max = 200) String content) {
 }
