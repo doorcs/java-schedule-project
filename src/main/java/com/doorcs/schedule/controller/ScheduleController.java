@@ -26,57 +26,57 @@ import com.doorcs.schedule.service.response.UpdateScheduleResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v2")
 @RequiredArgsConstructor
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    @PostMapping("/schedules")
-    public ResponseEntity<CreateScheduleResponse> create(
-        @RequestBody CreateScheduleRequest createScheduleRequest
-    ) {
-        CreateScheduleResponse createScheduleResponse = scheduleService.create(createScheduleRequest);
-
-        return ResponseEntity.ok().body(createScheduleResponse);
-    }
+    // @PostMapping("/schedules")
+    // public ResponseEntity<CreateScheduleResponse> create(
+    //     @RequestBody CreateScheduleRequest createScheduleRequest
+    // ) {
+    //     CreateScheduleResponse createScheduleResponse = scheduleService.create(createScheduleRequest);
+    //
+    //     return ResponseEntity.ok().body(createScheduleResponse);
+    // }
 
     @GetMapping("/schedules")
     public ResponseEntity<List<ReadScheduleResponse>> getAll(
-        @RequestParam(required = false) String name,
-        @RequestParam(required = false) Date date
+        @RequestParam(required = false) Long userId,
+        @RequestParam(required = false) Date modifiedDate
     ) {
-        List<ReadScheduleResponse> readScheduleResponses = scheduleService.getAll(name, date);
+        List<ReadScheduleResponse> readScheduleResponses = scheduleService.getAll(userId, modifiedDate);
 
         return ResponseEntity.ok().body(readScheduleResponses);
     }
 
     @GetMapping("/schedules/{id}")
     public ResponseEntity<ReadScheduleResponse> getById(
-        @PathVariable Long id
+        @PathVariable Long id // Schedule의 ID!
     ) {
         ReadScheduleResponse readScheduleResponse = scheduleService.getById(id);
 
         return ResponseEntity.ok().body(readScheduleResponse);
     }
 
-    @PutMapping("/schedules/{id}")
-    public ResponseEntity<UpdateScheduleResponse> update(
-        @PathVariable Long id,
-        @RequestBody UpdateScheduleRequest updateScheduleRequest
-    ) {
-        UpdateScheduleResponse updateScheduleResponse = scheduleService.update(id, updateScheduleRequest);
-
-        return ResponseEntity.ok().body(updateScheduleResponse);
-    }
-
-    @DeleteMapping("/schedules/{id}")
-    public ResponseEntity<DeleteScheduleResponse> delete(
-        @PathVariable Long id,
-        @RequestBody DeleteScheduleRequest password
-    ) {
-        DeleteScheduleResponse deleted = scheduleService.delete(id, password.password());
-
-        return ResponseEntity.ok().body(deleted);
-    }
+    // @PutMapping("/schedules/{id}")
+    // public ResponseEntity<UpdateScheduleResponse> update(
+    //     @PathVariable Long id,
+    //     @RequestBody UpdateScheduleRequest updateScheduleRequest
+    // ) {
+    //     UpdateScheduleResponse updateScheduleResponse = scheduleService.update(id, updateScheduleRequest);
+    //
+    //     return ResponseEntity.ok().body(updateScheduleResponse);
+    // }
+    //
+    // @DeleteMapping("/schedules/{id}")
+    // public ResponseEntity<DeleteScheduleResponse> delete(
+    //     @PathVariable Long id,
+    //     @RequestBody DeleteScheduleRequest password
+    // ) {
+    //     DeleteScheduleResponse deleted = scheduleService.delete(id, password.password());
+    //
+    //     return ResponseEntity.ok().body(deleted);
+    // }
 }
