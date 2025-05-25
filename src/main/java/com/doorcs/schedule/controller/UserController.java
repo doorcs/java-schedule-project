@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.doorcs.schedule.service.UserService;
 import com.doorcs.schedule.service.request.CreateUserRequest;
+import com.doorcs.schedule.service.request.DeleteUserRequest;
 import com.doorcs.schedule.service.request.SigninRequest;
 import com.doorcs.schedule.service.request.UpdateUserRequest;
 import com.doorcs.schedule.service.response.CreateUserResponse;
+import com.doorcs.schedule.service.response.DeleteUserResponse;
 import com.doorcs.schedule.service.response.SigninResponse;
 import com.doorcs.schedule.service.response.SignoutResponse;
 import com.doorcs.schedule.service.response.UpdateUserResponse;
@@ -72,5 +75,16 @@ public class UserController {
         UpdateUserResponse updateUserResponse = userService.update(jwt, updateUserRequest);
 
         return ResponseEntity.ok().body(updateUserResponse);
+    }
+
+    @DeleteMapping("/auth/me")
+    public ResponseEntity<DeleteUserResponse> deleteUser(
+        @CookieValue String jwt,
+        @RequestBody DeleteUserRequest password
+    ) {
+        DeleteUserResponse deleteUserResponse = userService.delete(jwt, password.password());
+
+        signoutUser(); // 로그아웃 처리!
+        return ResponseEntity.ok().body(deleteUserResponse);
     }
 }

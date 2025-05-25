@@ -13,6 +13,7 @@ import com.doorcs.schedule.service.request.CreateUserRequest;
 import com.doorcs.schedule.service.request.SigninRequest;
 import com.doorcs.schedule.service.request.UpdateUserRequest;
 import com.doorcs.schedule.service.response.CreateUserResponse;
+import com.doorcs.schedule.service.response.DeleteUserResponse;
 import com.doorcs.schedule.service.response.SigninResponse;
 import com.doorcs.schedule.service.response.UpdateUserResponse;
 
@@ -86,5 +87,23 @@ public class UserService {
             user.getEmail(),
             user.getModifiedAt()
         );
+    }
+
+    @Transactional
+    public DeleteUserResponse delete(String jwt, String password) {
+        Long userId = jwtUtil.getUserId(jwt);
+        User user = userRepository.findById(userId);
+
+        if (password == null || password.isEmpty() || !user.getPassword().equals(password)) {
+            throw new BadRequestException("비밀번호가 틀립니다.");
+        }
+
+        int affectedRow = userRepository.delete(userId);
+
+        if (affectedRow != 1) {
+            throw new BadRequestException("사용자 삭제에 실패했습니다.");
+        }
+
+        return new DeleteUserResponse(userId);
     }
 }
