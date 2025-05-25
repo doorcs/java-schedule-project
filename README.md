@@ -1,3 +1,23 @@
+## 레벨별 브랜치 및 PR 목록
+
+| 레벨 | 브랜치 | PR |
+| --- | --- | --- |
+| 레벨 0 | [level/0](https://github.com/doorcs/java-schedule-project/tree/level/0) | [PR #1](https://github.com/doorcs/java-schedule-project/pull/1) |
+| 레벨 1 | [level/1](https://github.com/doorcs/java-schedule-project/tree/level/1) | [PR #2](https://github.com/doorcs/java-schedule-project/pull/2) |
+| 레벨 2 | [level/2](https://github.com/doorcs/java-schedule-project/tree/level/2) | [PR #3](https://github.com/doorcs/java-schedule-project/pull/3) |
+| 레벨 3 | [level/3](https://github.com/doorcs/java-schedule-project/tree/level/3) | [PR #4](https://github.com/doorcs/java-schedule-project/pull/4) |
+| 레벨 4 | [level/4](https://github.com/doorcs/java-schedule-project/tree/level/4) | [PR #5](https://github.com/doorcs/java-schedule-project/pull/5) |
+| 레벨 5 | [level/5](https://github.com/doorcs/java-schedule-project/tree/level/5) | [PR #6](https://github.com/doorcs/java-schedule-project/pull/6) |
+| 레벨 6 | [level/6](https://github.com/doorcs/java-schedule-project/tree/level/6) | [PR #7](https://github.com/doorcs/java-schedule-project/pull/7) |
+
+### API 명세 및 ERD 버전
+| 레벨 | 버전 |
+| --- | :---: |
+| 레벨 0, 레벨 1, 레벨 2 | v1 |
+| 레벨 3, 레벨 4, 레벨 5, 레벨 6 | v2 |
+
+- - -
+
 ## API 명세 (v2)
 
 | 기능 | 메서드 | URL | 요청 | 응답 | 상태 코드 |
@@ -38,22 +58,22 @@ erDiagram
     user ||--o{ schedule : "1:N"
 
     user {
-        Long id PK
+        BIGINT id PK
         VARCHAR name
         VARCHAR password
-    %% 암호를 평문으로 저장하는게 정말 너무 거슬린다....
+        %% 암호를 평문으로 저장하는게 정말 너무 거슬린다....
         VARCHAR email
         DATE created_at
         DATE modified_at
-    %% 요구사항이 YYYY-MM-DD 형식이므로 DATE 사용
+        %% 요구사항이 YYYY-MM-DD 형식이므로 DATE 사용
     }
     schedule {
-        Long id PK
-        Long user_id FK
+        BIGINT id PK
+        BIGINT user_id FK
         TEXT content
         DATE created_at
         DATE modified_at
-    %% 요구사항이 YYYY-MM-DD 형식이므로 DATE 사용
+        %% 요구사항이 YYYY-MM-DD 형식이므로 DATE 사용
     }
 ```
 - SQL
@@ -84,7 +104,7 @@ CREATE TABLE schedule (
 ```mermaid
 erDiagram
     schedule {
-        Long id PK
+        BIGINT id PK
         TEXT content
         VARCHAR name
         VARCHAR password
