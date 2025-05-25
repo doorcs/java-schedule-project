@@ -3,18 +3,18 @@
 | 기능 | 메서드 | URL | 요청 | 응답 | 상태 코드 |
 | --- | --- | --- | --- | --- | --- |
 | 회원가입 | POST | `/api/v2/auth/signup` | RequestBody | ResponseBody | 200, 400 |
-| 로그인 | POST | `/api/v2/auth/signin` | RequestBody | ResponseBody | 200, 400 |
-| 로그아웃 | POST | `/api/v2/auth/signout` | RequestHeader | ResponseBody | 200, 400 | <!-- 로그아웃을 GET으로 구현하면 안된다!!! -->
+| 로그인 | POST | `/api/v2/auth/signin` | RequestBody | Cookie, ResponseBody | 200, 400 |
+| 로그아웃 | POST | `/api/v2/auth/signout` | Cookie | ResponseBody | 200, 400 | <!-- 로그아웃을 GET으로 구현하면 안된다!!! -->
 | - | - | - | - | - | - | <!-- 비밀번호 검증을 위해 RequestBody도 함께 요청 -->
-| 회원정보 수정 | POST | `/api/v2/auth/me` | RequestHeader, RequestBody | ResponseBody | 200, 400 |
-| 회원 탈퇴 | DELETE | `/api/v2/auth/me` | RequestHeader, RequestBody | ResponseBody | 200, 400 |
+| 회원정보 수정 | POST | `/api/v2/auth/me` | Cookie, RequestBody | ResponseBody | 200, 400 |
+| 회원 탈퇴 | DELETE | `/api/v2/auth/me` | Cookie, RequestBody | ResponseBody | 200, 400 |
 | - | - | - | - | - | - |
 | 전체 일정 조회 | GET | `/api/v2/schedules` | (optional) QueryString | ResponseBody | 200 |
 | 선택 일정 조회 | GET | `/api/v2/schedules/{id}` | PathVariable | ResponseBody | 200, 404 |
 | - | - | - | - | - | - | <!-- 일정 생성, 수정, 삭제는 로그인 요구 -->
-| 일정 생성 | POST | `/api/v2/schedules` | RequestHeader, RequestBody | ResponseBody | 200, 400 |
-| 일정 수정 | PUT | `/api/v2/schedules/{id}` | RequestHeader, PathVariable, RequestBody | ResponseBody | 200, 400, 404 |
-| 일정 삭제 | DELETE | `/api/v2/schedules/{id}` | RequestHeader, PathVariable, RequestBody | ResponseBody | 200, 400, 404 |
+| 일정 생성 | POST | `/api/v2/schedules` | Cookie, RequestBody | ResponseBody | 200, 400 |
+| 일정 수정 | PUT | `/api/v2/schedules/{id}` | Cookie, PathVariable, RequestBody | ResponseBody | 200, 400, 404 |
+| 일정 삭제 | DELETE | `/api/v2/schedules/{id}` | Cookie, PathVariable, RequestBody | ResponseBody | 200, 400, 404 |
 
 <details>
 <summary>0-2단계 API 명세 (v1)</summary>

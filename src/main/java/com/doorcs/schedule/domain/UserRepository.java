@@ -24,4 +24,17 @@ public class UserRepository {
             user.getModifiedAt()
         );
     }
+
+    public User findByEmail(String email) {
+        String sql = "SELECT * FROM user WHERE email = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> User.of(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("password"),
+                rs.getString("email"),
+                rs.getDate("created_at"),
+                rs.getDate("modified_at")
+            ), email
+        );
+    }
 }
