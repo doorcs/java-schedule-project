@@ -66,16 +66,15 @@ public class ScheduleRepository {
         );
     }
 
-    // public int update(Schedule schedule) {
-    //     String sql = "UPDATE schedule SET content = ?, name = ?, modified_at = ? WHERE id = ?";
-    //     return jdbcTemplate.update(sql,
-    //         schedule.getContent(),
-    //         schedule.getName(),
-    //         schedule.getModifiedAt(),
-    //         schedule.getId()
-    //     );
-    // }
-    //
+    public int update(Schedule schedule) {
+        String sql = "UPDATE schedule SET content = ?, modified_at = ? WHERE id = ?";
+        return jdbcTemplate.update(sql,
+            schedule.getContent(),
+            schedule.getModifiedAt(),
+            schedule.getId()
+        );
+    }
+
     // public int delete(Long id) {
     //     String sql = "DELETE FROM schedule WHERE id = ?";
     //     return jdbcTemplate.update(sql, id);

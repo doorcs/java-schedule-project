@@ -62,16 +62,17 @@ public class ScheduleController {
         return ResponseEntity.ok().body(readScheduleResponse);
     }
 
-    // @PutMapping("/schedules/{id}")
-    // public ResponseEntity<UpdateScheduleResponse> update(
-    //     @PathVariable Long id,
-    //     @RequestBody UpdateScheduleRequest updateScheduleRequest
-    // ) {
-    //     UpdateScheduleResponse updateScheduleResponse = scheduleService.update(id, updateScheduleRequest);
-    //
-    //     return ResponseEntity.ok().body(updateScheduleResponse);
-    // }
-    //
+    @PutMapping("/schedules/{id}")
+    public ResponseEntity<UpdateScheduleResponse> update(
+        @CookieValue String jwt,
+        @PathVariable Long id,
+        @RequestBody UpdateScheduleRequest updateScheduleRequest
+    ) {
+        UpdateScheduleResponse updateScheduleResponse = scheduleService.update(jwt, id, updateScheduleRequest);
+
+        return ResponseEntity.ok().body(updateScheduleResponse);
+    }
+
     // @DeleteMapping("/schedules/{id}")
     // public ResponseEntity<DeleteScheduleResponse> delete(
     //     @PathVariable Long id,

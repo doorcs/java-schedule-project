@@ -79,42 +79,43 @@ public class ScheduleService {
         );
     }
 
-    // @Transactional
-    // public UpdateScheduleResponse update(
-    //     Long id,
-    //     UpdateScheduleRequest updateScheduleRequest
-    // ) {
-    //     Schedule schedule = scheduleRepository.findById(id);
-    //
-    //     if (updateScheduleRequest.password() == null ||
-    //         updateScheduleRequest.password().isEmpty() ||
-    //         !schedule.getPassword().equals(updateScheduleRequest.password())
-    //     ) {
-    //         throw new BadRequestException("비밀번호가 틀립니다.");
-    //     }
-    //
-    //     if (updateScheduleRequest.content() == null && updateScheduleRequest.name() == null) {
-    //         throw new BadRequestException("수정할 내용이 없습니다.");
-    //     }
-    //
-    //     schedule.update(
-    //         updateScheduleRequest.content() != null ? updateScheduleRequest.content() : schedule.getContent(),
-    //         updateScheduleRequest.name() != null ? updateScheduleRequest.name() : schedule.getName()
-    //     );
-    //
-    //     int affectedRow = scheduleRepository.update(schedule);
-    //
-    //     if (affectedRow != 1) {
-    //         throw new BadRequestException("일정 수정을 실패했습니다.");
-    //     }
-    //
-    //     return new UpdateScheduleResponse(
-    //         schedule.getContent(),
-    //         schedule.getName(),
-    //         schedule.getModifiedAt()
-    //     );
-    // }
-//
+    @Transactional
+    public UpdateScheduleResponse update(
+        String jwt,
+        Long id,
+        UpdateScheduleRequest updateScheduleRequest
+    ) {
+        Long userId = jwtUtil.getUserId(jwt);
+        Schedule schedule = scheduleRepository.findById(id);
+
+        if (schedule == null) {
+            throw new BadRequestException("존재하지 않는 일정입니다.");
+        }
+
+        if (!schedule.getUserId().equals(userId)) {
+            throw new BadRequestException("로그인이 필요합니다.");
+        }
+
+        if (updateScheduleRequest.content() == null) {
+            throw new BadRequestException("수정할 내용이 없습니다.");
+        }
+
+        schedule.update(
+            updateScheduleRequest.content()
+        );
+
+        int affectedRow = scheduleRepository.update(schedule);
+
+        if (affectedRow != 1) {
+            throw new BadRequestException("일정 수정을 실패했습니다.");
+        }
+
+        return new UpdateScheduleResponse(
+            schedule.getContent(),
+            schedule.getModifiedAt()
+        );
+    }
+
 //     @Transactional
 //     public DeleteScheduleResponse delete(Long id, String password) {
 //         Schedule schedule = scheduleRepository.findById(id);
