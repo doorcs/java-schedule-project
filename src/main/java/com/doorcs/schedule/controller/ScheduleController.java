@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.doorcs.schedule.service.ScheduleService;
 import com.doorcs.schedule.service.request.CreateScheduleRequest;
-import com.doorcs.schedule.service.request.DeleteScheduleRequest;
 import com.doorcs.schedule.service.request.UpdateScheduleRequest;
 import com.doorcs.schedule.service.response.CreateScheduleResponse;
 import com.doorcs.schedule.service.response.DeleteScheduleResponse;
@@ -26,7 +26,7 @@ import com.doorcs.schedule.service.response.UpdateScheduleResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v2")
 @RequiredArgsConstructor
 public class ScheduleController {
 
@@ -34,26 +34,27 @@ public class ScheduleController {
 
     @PostMapping("/schedules")
     public ResponseEntity<CreateScheduleResponse> create(
+        @CookieValue String jwt,
         @RequestBody CreateScheduleRequest createScheduleRequest
     ) {
-        CreateScheduleResponse createScheduleResponse = scheduleService.create(createScheduleRequest);
+        CreateScheduleResponse createScheduleResponse = scheduleService.create(jwt, createScheduleRequest);
 
         return ResponseEntity.ok().body(createScheduleResponse);
     }
 
     @GetMapping("/schedules")
     public ResponseEntity<List<ReadScheduleResponse>> getAll(
-        @RequestParam(required = false) String name,
-        @RequestParam(required = false) Date date
+        @RequestParam(required = false) Long userId,
+        @RequestParam(required = false) Date modifiedDate
     ) {
-        List<ReadScheduleResponse> readScheduleResponses = scheduleService.getAll(name, date);
+        List<ReadScheduleResponse> readScheduleResponses = scheduleService.getAll(userId, modifiedDate);
 
         return ResponseEntity.ok().body(readScheduleResponses);
     }
 
     @GetMapping("/schedules/{id}")
     public ResponseEntity<ReadScheduleResponse> getById(
-        @PathVariable Long id
+        @PathVariable Long id // Schedule의 ID!
     ) {
         ReadScheduleResponse readScheduleResponse = scheduleService.getById(id);
 
@@ -62,20 +63,21 @@ public class ScheduleController {
 
     @PutMapping("/schedules/{id}")
     public ResponseEntity<UpdateScheduleResponse> update(
+        @CookieValue String jwt,
         @PathVariable Long id,
         @RequestBody UpdateScheduleRequest updateScheduleRequest
     ) {
-        UpdateScheduleResponse updateScheduleResponse = scheduleService.update(id, updateScheduleRequest);
+        UpdateScheduleResponse updateScheduleResponse = scheduleService.update(jwt, id, updateScheduleRequest);
 
         return ResponseEntity.ok().body(updateScheduleResponse);
     }
 
     @DeleteMapping("/schedules/{id}")
     public ResponseEntity<DeleteScheduleResponse> delete(
-        @PathVariable Long id,
-        @RequestBody DeleteScheduleRequest password
+        @CookieValue String jwt,
+        @PathVariable Long id
     ) {
-        DeleteScheduleResponse deleted = scheduleService.delete(id, password.password());
+        DeleteScheduleResponse deleted = scheduleService.delete(jwt, id);
 
         return ResponseEntity.ok().body(deleted);
     }

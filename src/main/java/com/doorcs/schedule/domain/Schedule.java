@@ -11,30 +11,27 @@ import lombok.NoArgsConstructor;
 public class Schedule {
 
     private Long id;
+    private Long userId; // FK
     private String content;
-    private String name;
-    private String password;
     private Date createdAt;
     private Date modifiedAt;
 
-    public static Schedule of(Long id, String content, String name, String password, Date createdAt, Date modifiedAt) {
+    public static Schedule of(Long id, Long userId, String content, Date createdAt, Date modifiedAt) {
         Schedule schedule = new Schedule();
         schedule.id = id;
+        schedule.userId = userId;
         schedule.content = content;
-        schedule.name = name;
-        schedule.password = password;
         schedule.createdAt = createdAt;
         schedule.modifiedAt = modifiedAt;
         return schedule;
     }
 
-    public static Schedule of(String content, String name, String password, Date createdAt) {
-        return of(null, content, name, password, createdAt, createdAt);
+    public static Schedule of(Long userId, String content, Date createdAt) {
+        return of(null, userId, content, createdAt, createdAt);
     }
 
-    public void update(String content, String name) {
+    public void update(String content) {
         this.content = content;
-        this.name = name;
         this.modifiedAt = new Date(System.currentTimeMillis());
     }
 }

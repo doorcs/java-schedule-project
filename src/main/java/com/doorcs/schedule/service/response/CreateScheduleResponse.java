@@ -2,5 +2,5 @@ package com.doorcs.schedule.service.response;
 
 import java.sql.Date;
 
-public record CreateScheduleResponse(String content, String name, Date createdDate) {
+public record CreateScheduleResponse(Long userId, String content, Date createdDate) {
 }

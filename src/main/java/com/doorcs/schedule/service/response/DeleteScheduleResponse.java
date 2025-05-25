@@ -1,4 +1,4 @@
 package com.doorcs.schedule.service.response;
 
-public record DeleteScheduleResponse(Long deletedScheduleId) {
+public record DeleteScheduleResponse(Long deletedScheduleId, String content) {
 }

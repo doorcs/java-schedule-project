@@ -19,27 +19,26 @@ public class ScheduleRepository {
     } // 이 생성자는 `@requiredArgsConstructor`로 대체 불가능!!
 
     public int save(Schedule schedule) {
-        String sql = "INSERT INTO schedule (content, name, password, created_at, modified_at) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO schedule (content, user_id, created_at, modified_at) VALUES (?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
             schedule.getContent(),
-            schedule.getName(),
-            schedule.getPassword(),
+            schedule.getUserId(),
             schedule.getCreatedAt(),
             schedule.getModifiedAt()
         );
     }
 
-    public List<Schedule> findAll(String name, Date date) {
+    public List<Schedule> findAll(Long userId, Date date) {
         String sql = "SELECT * FROM schedule WHERE TRUE";
         List<Object> params = new ArrayList<>();
 
-        if (name != null && !name.isEmpty()) {
-            sql += " AND name = ?";
-            params.add(name);
+        if (userId != null) {
+            sql += " AND user_id = ?";
+            params.add(userId);
         }
 
         if (date != null) {
-            sql += " AND created_at = ?";
+            sql += " AND modified_at = ?";
             params.add(date);
         }
 
@@ -47,9 +46,8 @@ public class ScheduleRepository {
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> Schedule.of(
                 rs.getLong("id"),
+                rs.getLong("user_id"),
                 rs.getString("content"),
-                rs.getString("name"),
-                rs.getString("password"),
                 rs.getDate("created_at"),
                 rs.getDate("modified_at")
             ), params.toArray()
@@ -60,9 +58,8 @@ public class ScheduleRepository {
         String sql = "SELECT * FROM schedule WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> Schedule.of(
                 rs.getLong("id"),
+                rs.getLong("user_id"),
                 rs.getString("content"),
-                rs.getString("name"),
-                rs.getString("password"),
                 rs.getDate("created_at"),
                 rs.getDate("modified_at")
             ), id
@@ -70,10 +67,9 @@ public class ScheduleRepository {
     }
 
     public int update(Schedule schedule) {
-        String sql = "UPDATE schedule SET content = ?, name = ?, modified_at = ? WHERE id = ?";
+        String sql = "UPDATE schedule SET content = ?, modified_at = ? WHERE id = ?";
         return jdbcTemplate.update(sql,
             schedule.getContent(),
-            schedule.getName(),
             schedule.getModifiedAt(),
             schedule.getId()
         );
