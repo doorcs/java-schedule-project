@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.doorcs.schedule.service.ScheduleService;
 import com.doorcs.schedule.service.request.CreateScheduleRequest;
-import com.doorcs.schedule.service.request.DeleteScheduleRequest;
 import com.doorcs.schedule.service.request.UpdateScheduleRequest;
 import com.doorcs.schedule.service.response.CreateScheduleResponse;
 import com.doorcs.schedule.service.response.DeleteScheduleResponse;
@@ -73,13 +72,13 @@ public class ScheduleController {
         return ResponseEntity.ok().body(updateScheduleResponse);
     }
 
-    // @DeleteMapping("/schedules/{id}")
-    // public ResponseEntity<DeleteScheduleResponse> delete(
-    //     @PathVariable Long id,
-    //     @RequestBody DeleteScheduleRequest password
-    // ) {
-    //     DeleteScheduleResponse deleted = scheduleService.delete(id, password.password());
-    //
-    //     return ResponseEntity.ok().body(deleted);
-    // }
+    @DeleteMapping("/schedules/{id}")
+    public ResponseEntity<DeleteScheduleResponse> delete(
+        @CookieValue String jwt,
+        @PathVariable Long id
+    ) {
+        DeleteScheduleResponse deleted = scheduleService.delete(jwt, id);
+
+        return ResponseEntity.ok().body(deleted);
+    }
 }

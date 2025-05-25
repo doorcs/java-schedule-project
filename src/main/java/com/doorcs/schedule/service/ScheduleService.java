@@ -15,6 +15,7 @@ import com.doorcs.schedule.jwt.JwtUtil;
 import com.doorcs.schedule.service.request.CreateScheduleRequest;
 import com.doorcs.schedule.service.request.UpdateScheduleRequest;
 import com.doorcs.schedule.service.response.CreateScheduleResponse;
+import com.doorcs.schedule.service.response.DeleteScheduleResponse;
 import com.doorcs.schedule.service.response.ReadScheduleResponse;
 import com.doorcs.schedule.service.response.UpdateScheduleResponse;
 
@@ -116,20 +117,25 @@ public class ScheduleService {
         );
     }
 
-//     @Transactional
-//     public DeleteScheduleResponse delete(Long id, String password) {
-//         Schedule schedule = scheduleRepository.findById(id);
-//
-//         if (password == null || password.isEmpty() || !schedule.getPassword().equals(password)) {
-//             throw new BadRequestException("비밀번호가 틀립니다.");
-//         }
-//
-//         int affectedRow = scheduleRepository.delete(id);
-//
-//         if (affectedRow != 1) {
-//             throw new BadRequestException("일정 삭제를 실패했습니다.");
-//         }
-//
-//         return new DeleteScheduleResponse(id);
-//     }
+    @Transactional
+    public DeleteScheduleResponse delete(String jwt, Long id) {
+        Long userId = jwtUtil.getUserId(jwt);
+        Schedule schedule = scheduleRepository.findById(id);
+
+        if (schedule == null) {
+            throw new BadRequestException("존재하지 않는 일정입니다.");
+        }
+
+        if (!schedule.getUserId().equals(userId)) {
+            throw new BadRequestException("로그인이 필요합니다.");
+        }
+
+        int affectedRow = scheduleRepository.delete(id);
+
+        if (affectedRow != 1) {
+            throw new BadRequestException("일정 삭제를 실패했습니다.");
+        }
+
+        return new DeleteScheduleResponse(id, schedule.getContent());
+    }
 }
