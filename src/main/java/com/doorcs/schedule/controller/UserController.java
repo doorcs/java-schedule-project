@@ -21,6 +21,7 @@ import com.doorcs.schedule.service.response.SigninResponse;
 import com.doorcs.schedule.service.response.SignoutResponse;
 import com.doorcs.schedule.service.response.UpdateUserResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,7 +33,7 @@ public class UserController {
 
     @PostMapping("/auth/signup")
     public ResponseEntity<CreateUserResponse> createUser(
-        @RequestBody CreateUserRequest createUserRequest
+        @Valid @RequestBody CreateUserRequest createUserRequest
     ) {
         CreateUserResponse createUserResponse = userService.create(createUserRequest);
 

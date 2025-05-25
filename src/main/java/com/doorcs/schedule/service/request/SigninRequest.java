@@ -1,4 +1,7 @@
 package com.doorcs.schedule.service.request;
 
-public record SigninRequest(String email, String password) { // email 필드가 UNIQUE이므로 email, pw 사용
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record SigninRequest(@NotBlank @Email String email, @NotBlank String password) { // UNIQUE인 email 필드와 pw 사용
 }
