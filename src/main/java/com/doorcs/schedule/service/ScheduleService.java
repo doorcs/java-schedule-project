@@ -55,8 +55,8 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReadScheduleResponse> getAll(Long userId, Date date) {
-        return scheduleRepository.findAll(userId, date).stream()
+    public List<ReadScheduleResponse> getAll(Long userId, Date date, int page, int pageSize) {
+        return scheduleRepository.findAll(userId, date, page, pageSize).stream()
             .map(schedule -> {
                 User user = userRepository.findById(schedule.getUserId());
                 String userName = user != null ? user.getName() : "탈퇴한 사용자";
