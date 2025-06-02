@@ -3,6 +3,7 @@ package com.doorcs.schedule.domain;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -28,32 +29,29 @@ public class ScheduleRepository {
         );
     }
 
-    public List<Schedule> findAll(Long userId, Date date, int page, int pageSize) {
-        String sql = "SELECT * FROM schedule WHERE TRUE";
+    public List<Map<String, Object>> findAllWithUser(Long userId, Date date, int page, int pageSize) {
+        String sql = "SELECT s.id, s.user_id, s.content, s.created_at, s.modified_at, " +
+                     "COALESCE(u.name, '탈퇴한 사용자') as user_name " +
+                     "FROM schedule s " +
+                     "JOIN user u ON s.user_id = u.id " + // Join 활용!
+                     "WHERE TRUE";
         List<Object> params = new ArrayList<>();
 
         if (userId != null) {
-            sql += " AND user_id = ?";
+            sql += " AND s.user_id = ?";
             params.add(userId);
         }
 
         if (date != null) {
-            sql += " AND modified_at = ?";
+            sql += " AND s.modified_at = ?";
             params.add(date);
         }
 
-        sql += " ORDER BY modified_at LIMIT ? OFFSET ?";
+        sql += " ORDER BY s.modified_at LIMIT ? OFFSET ?";
         params.add(pageSize);
         params.add(page * pageSize);
 
-        return jdbcTemplate.query(sql, (rs, rowNum) -> Schedule.of(
-                rs.getLong("id"),
-                rs.getLong("user_id"),
-                rs.getString("content"),
-                rs.getDate("created_at"),
-                rs.getDate("modified_at")
-            ), params.toArray()
-        );
+        return jdbcTemplate.queryForList(sql, params.toArray()); // .query() 대신 .queryForList() 사용
     }
 
     public Schedule findById(Long id) {

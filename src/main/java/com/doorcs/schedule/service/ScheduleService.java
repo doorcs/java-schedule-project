@@ -2,6 +2,7 @@ package com.doorcs.schedule.service;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,16 +57,12 @@ public class ScheduleService {
 
     @Transactional(readOnly = true)
     public List<ReadScheduleResponse> getAll(Long userId, Date date, int page, int pageSize) {
-        return scheduleRepository.findAll(userId, date, page, pageSize).stream()
-            .map(schedule -> {
-                User user = userRepository.findById(schedule.getUserId());
-                String userName = user != null ? user.getName() : "탈퇴한 사용자";
-                return new ReadScheduleResponse(
-                    schedule.getContent(),
-                    userName,
-                    schedule.getModifiedAt()
-                );
-            }).toList();
+        return scheduleRepository.findAllWithUser(userId, date, page, pageSize).stream()
+            .map(row -> new ReadScheduleResponse( // 람다식 안에서 유저를 조회하던 코드 제거 (리포지토리에서 Join으로 처리)
+                String(row.get("content")),
+                String(row.get("user_name")),
+                Date(row.get("modified_at"))
+            )).toList();
     }
 
     @Transactional(readOnly = true)
